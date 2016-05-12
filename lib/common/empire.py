@@ -1383,15 +1383,11 @@ class AgentMenu(cmd.Cmd):
 
     def do_exit(self, line):
         "Task agent to exit."
-
         try:
-            choice = raw_input(helpers.color("[>] Task agent to exit? [y/N] ", "red"))
-            if choice.lower() != "" and choice.lower()[0] == "y":
-
-                self.mainMenu.agents.add_agent_task(self.sessionID, "TASK_EXIT")
-                # update the agent log
-                self.mainMenu.agents.save_agent_log(self.sessionID, "Tasked agent to exit")
-                return True
+            self.mainMenu.agents.add_agent_task(self.sessionID, "TASK_EXIT")
+            # update the agent log
+            self.mainMenu.agents.save_agent_log(self.sessionID, "Tasked agent to exit")
+            return True
 
         except KeyboardInterrupt as e: print ""
 

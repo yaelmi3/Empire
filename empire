@@ -1178,9 +1178,9 @@ if __name__ == '__main__':
     parser.add_argument('--headless', action='store_true', help='Run Empire and the RESTful API headless without the usual interface.')
     parser.add_argument('--username', nargs='?', help='Start the RESTful API with the specified username instead of pulling from empire.db')
     parser.add_argument('--password', nargs='?', help='Start the RESTful API with the specified password instead of pulling from empire.db')
+    parser.add_argument('--create_test_listener', nargs='?', help='Generate test listener with stager launcher.bat')
 
     args = parser.parse_args()
-
     if not args.restport:
         args.restport = '1337'
 
@@ -1202,6 +1202,16 @@ if __name__ == '__main__':
                 start_restful_api(startEmpire=True, suppress=True, username=args.username, password=args.password, port=args.restport)
             except SystemExit as e:
                 pass
+    elif args.create_test_listener:
+        main = empire.MainMenu(args=args)
+        stager_menu = empire.StagerMenu(main, stagerName='launcher_bat')
+        stager_menu.do_set('Listener test')
+        stager_menu.do_set('Delete false')
+        listener_menu = empire.ListenerMenu(main)
+        listener_menu.do_execute('test')
+        stager_menu.do_execute('test')
+        stager_menu.do_exit('')
+
     else:
         # normal execution
         main = empire.MainMenu(args=args)
