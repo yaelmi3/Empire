@@ -2323,15 +2323,6 @@ class ModuleMenu(cmd.Cmd):
                     print helpers.color("[!] Error: module needs to run in an elevated context.")
                     return False
 
-        # if the module isn't opsec safe, prompt before running
-        if not self.module.info['OpsecSafe']:
-            try:
-                choice = raw_input(helpers.color("[>] Module is not opsec safe, run? [y/N] ", "red"))
-                if not (choice.lower() != "" and choice.lower()[0] == "y"):
-                    return False
-            except KeyboardInterrupt as e:
-                print ""
-                return False
 
         return True
 
@@ -2769,7 +2760,7 @@ class StagerMenu(cmd.Cmd):
 
 
     def do_generate(self, line):
-        "Generate/execute the given Empire stager."
+        "Generatdoe/execute the given Empire stager."
 
         if not self.validate_options():
             return

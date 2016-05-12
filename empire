@@ -1179,6 +1179,10 @@ if __name__ == '__main__':
     parser.add_argument('--username', nargs='?', help='Start the RESTful API with the specified username instead of pulling from empire.db')
     parser.add_argument('--password', nargs='?', help='Start the RESTful API with the specified password instead of pulling from empire.db')
     parser.add_argument('--create_test_listener', nargs='?', help='Generate test listener with stager launcher.bat')
+    parser.add_argument('--agent_uid', nargs='?', help='specify agent uid')
+    parser.add_argument('--run_module', nargs='?', help='Specify the requested module')
+    parser.add_argument('--upload_testfile', nargs='?', help='Upload exploit_generated.txt file to a specified location on the agent')
+    parser.add_argument('--module_args', nargs='?', help='Provide module arguments')
 
     args = parser.parse_args()
     if not args.restport:
@@ -1205,12 +1209,27 @@ if __name__ == '__main__':
     elif args.create_test_listener:
         main = empire.MainMenu(args=args)
         stager_menu = empire.StagerMenu(main, stagerName='launcher_bat')
-        stager_menu.do_set('Listener test')
+        stager_menu.do_set('Listener {0}'.format(args.create_test_listener))
         stager_menu.do_set('Delete false')
         listener_menu = empire.ListenerMenu(main)
-        listener_menu.do_execute('test')
-        stager_menu.do_execute('test')
+        listener_menu.do_execute(args.create_test_listener)
+        stager_menu.do_execute(args.create_test_listener)
         stager_menu.do_exit('')
+    elif args.run_module:
+        main = empire.MainMenu(args=args)
+        module_menu = empire.ModuleMenu(main, args.run_module, agent=args.agent_uid)
+        if args.module_args:
+            module_menu.do_set('Listener test')
+            module_menu.do_set("Agent {0}".format(args.agent_uid))
+            for argument in args.module_args.split(','):
+                module_menu.do_set(argument)
+        module_menu.do_run(args.agent_uid)
+        module_menu.do_exit('')
+    elif args.upload_testfile:
+        main = empire.MainMenu(args=args)
+        agent_menu = empire.AgentMenu(main, args.agent_uid)
+        agent_menu.do_upload("exploit_generated.txt {0}\\exploit_generated.txt".format(args.upload_testfile))
+
 
     else:
         # normal execution
