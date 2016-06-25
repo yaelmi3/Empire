@@ -1183,6 +1183,7 @@ if __name__ == '__main__':
     parser.add_argument('--run_module', nargs='?', help='Specify the requested module')
     parser.add_argument('--upload_testfile', nargs='?', help='Upload exploit_generated.txt file to a specified location on the agent')
     parser.add_argument('--module_args', nargs='?', help='Provide module arguments')
+    parser.add_argument('--run_shell', nargs='?', help='specify shell command')
 
     args = parser.parse_args()
     if not args.restport:
@@ -1225,10 +1226,16 @@ if __name__ == '__main__':
                 module_menu.do_set(argument)
         module_menu.do_run(args.agent_uid)
         module_menu.do_exit('')
+    elif args.run_shell:
+        main = empire.MainMenu(args=args)
+        agent_menu = empire.AgentMenu(main, args.agent_uid)
+        agent_menu.do_shell(args.run_shell)
     elif args.upload_testfile:
         main = empire.MainMenu(args=args)
         agent_menu = empire.AgentMenu(main, args.agent_uid)
         agent_menu.do_upload("exploit_generated.txt {0}\\exploit_generated.txt".format(args.upload_testfile))
+
+
 
 
     else:
